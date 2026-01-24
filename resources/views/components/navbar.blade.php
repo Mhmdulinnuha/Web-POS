@@ -28,9 +28,16 @@
             </div>
         </div>
 
-        <button data-collapse-toggle="mobile-menu" type="button" class="md:hidden text-2xl text-blue-900 dark:text-green-500 focus:outline-none">
-            <i class="fas fa-bars"></i>
-        </button>
+        <div class="flex items-center gap-2 md:hidden">
+            <button id="theme-toggle-mobile" type="button" class="text-gray-500 dark:text-yellow-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 transition">
+                <i class="fas fa-sun hidden dark:block text-lg"></i>
+                <i class="fas fa-moon block dark:hidden text-lg"></i>
+            </button>
+
+            <button data-collapse-toggle="mobile-menu" type="button" class="text-2xl text-blue-900 dark:text-green-500 focus:outline-none p-2">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
     </div>
 
     <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-black border-t dark:border-green-500/20 p-6 flex flex-col space-y-4">
@@ -45,21 +52,8 @@
 
 @push('scripts')
 <script>
-    // Logic Tema Flowbite (Hitam-Hijau-Kuning)
-    var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-    var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-
-    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        themeToggleLightIcon.classList.remove('hidden');
-    } else {
-        themeToggleDarkIcon.classList.remove('hidden');
-    }
-
-    var themeToggleBtn = document.getElementById('theme-toggle');
-    themeToggleBtn.addEventListener('click', function() {
-        themeToggleDarkIcon.classList.toggle('hidden');
-        themeToggleLightIcon.classList.toggle('hidden');
-
+    // Fungsi umum untuk toggle tema
+    function toggleDarkMode() {
         if (localStorage.getItem('color-theme')) {
             if (localStorage.getItem('color-theme') === 'light') {
                 document.documentElement.classList.add('dark');
@@ -77,6 +71,31 @@
                 localStorage.setItem('color-theme', 'dark');
             }
         }
-    });
+        
+        // Update ikon (untuk desktop SVG)
+        updateThemeIcons();
+    }
+
+    function updateThemeIcons() {
+        var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (document.documentElement.classList.contains('dark')) {
+            themeToggleLightIcon?.classList.remove('hidden');
+            themeToggleDarkIcon?.classList.add('hidden');
+        } else {
+            themeToggleDarkIcon?.classList.remove('hidden');
+            themeToggleLightIcon?.classList.add('hidden');
+        }
+    }
+
+    // Inisialisasi ikon saat load
+    updateThemeIcons();
+
+    // Listener untuk Desktop
+    document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
+    
+    // Listener untuk Mobile
+    document.getElementById('theme-toggle-mobile').addEventListener('click', toggleDarkMode);
 </script>
 @endpush

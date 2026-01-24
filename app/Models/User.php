@@ -21,6 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'store_name', // Tambahkan ini
+        'address',    // Tambahkan ini
         'role', // Pastikan role ada di sini
     ];
 
