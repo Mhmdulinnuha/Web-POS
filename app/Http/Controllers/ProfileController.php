@@ -57,4 +57,22 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+    public function updateSetting(Request $request)
+{
+    $user = auth()->user();
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'store_name' => 'nullable|string|max:100',
+        'address' => 'nullable|string',
+    ]);
+
+    $user->update([
+        'name' => $request->name,
+        'store_name' => $request->store_name,
+        'address' => $request->address,
+    ]);
+
+    return redirect()->back()->with('success', 'Pengaturan toko berhasil diperbarui!');
+}
 }
