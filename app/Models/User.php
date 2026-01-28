@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -21,6 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'admin_id',
+        'employee_id',
+        'status',
+        'store_name',
+        'address'
     ];
 
     /**
@@ -35,8 +41,7 @@ class User extends Authenticatable
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -44,5 +49,31 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Seorang Admin memiliki banyak produk
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function cashiers()
+    {
+        return $this->hasMany(User::class, 'admin_id');
+    }
+
+    /**
+     * Relasi: Kasir dimiliki oleh satu Admin
+     */
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class);
     }
 }
