@@ -6,16 +6,18 @@ use App\Http\Controllers\Admin\AdminIndexController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\AdminCashierController;
 use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Kasir\KasirIndexController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+
+Route::middleware(['auth', 'role:kasir'])->group(function () { 
+    Route::get('/dashboardksr', [KasirIndexController::class, 'dashboardksr'])->name('kasir.dashboardksr'); });
+
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     // Halaman Utama Admin
     Route::get('/dashboard', [AdminIndexController::class, 'dashboard'])->name('dashboard');
     Route::get('/produk', [AdminIndexController::class, 'produk'])->name('produk');
