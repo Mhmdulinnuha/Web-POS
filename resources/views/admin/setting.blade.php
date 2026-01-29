@@ -111,23 +111,23 @@
                             <div class="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-slate-200 dark:border-gray-800 flex items-center justify-between shadow-sm hover:border-blue-300 dark:hover:border-green-800 transition-all">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 bg-slate-100 dark:bg-gray-800 rounded-xl flex items-center justify-center text-xl">
-                                        @if($pay->type == 'bank') <i class="fas fa-university text-blue-500"></i>
-                                        @elseif($pay->type == 'ewallet') <i class="fas fa-mobile-alt text-green-500"></i>
+                                        @if($pay?->type == 'bank') <i class="fas fa-university text-blue-500"></i>
+                                        @elseif($pay?->type == 'ewallet') <i class="fas fa-mobile-alt text-green-500"></i>
                                         @else <i class="fas fa-qrcode text-red-500"></i> @endif
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-sm dark:text-white uppercase">{{ $pay->provider }}</h4>
-                                        <p class="text-xs text-slate-500">{{ $pay->account_number }} a/n {{ $pay->account_name }}</p>
+                                        <h4 class="font-bold text-sm dark:text-white uppercase">{{ $pay?->provider }}</h4>
+                                        <p class="text-xs text-slate-500">{{ $pay?->account_number }} a/n {{ $pay?->account_name }}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    @if($pay->qr_image)
-                                        <button onclick="window.open('{{ asset('storage/' . $pay->qr_image) }}')"
+                                    @if($pay?->qr_image)
+                                        <button onclick="window.open('@{!! asset('storage/' . ($pay?->qr_image ?? '')) !!}@')"
                                             class="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all" title="Lihat QR">
                                             <i class="fas fa-qrcode text-lg"></i>
                                         </button>
                                     @endif
-                                    <form action="{{ route('payment.destroy', $pay->id) }}" method="POST" onsubmit="return confirm('Hapus metode ini?')">
+                                    <form action="{{ route('payment.destroy', $pay?->id) }}" method="POST" onsubmit="return confirm('Hapus metode ini?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all">
                                             <i class="fas fa-trash-alt text-lg"></i>
@@ -142,6 +142,36 @@
                             </div>
                         @endforelse
                     </div>
+                </div>
+
+                {{-- TAB 3: GANTI PASSWORD --}}
+                <div id="tab-keamanan" class="tab-content hidden animate-fade-in">
+                    <form action="{{ route('setting.updatePassword') }}" method="POST" class="bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-800 shadow-sm overflow-hidden max-w-lg mx-auto">
+                        @csrf
+                        @method('PATCH')
+                        <div class="p-8 space-y-6">
+                            <h3 class="text-lg font-bold dark:text-yellow-400 uppercase tracking-widest text-blue-700">Ganti Password</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase ml-1">Password Lama</label>
+                                    <input type="password" name="current_password" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-blue-100 dark:focus:ring-green-900/20 outline-none transition-all dark:text-white text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase ml-1">Password Baru</label>
+                                    <input type="password" name="password" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-blue-100 dark:focus:ring-green-900/20 outline-none transition-all dark:text-white text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase ml-1">Konfirmasi Password Baru</label>
+                                    <input type="password" name="password_confirmation" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-4 focus:ring-blue-100 dark:focus:ring-green-900/20 outline-none transition-all dark:text-white text-sm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 bg-slate-50 dark:bg-gray-800/50 border-t dark:border-gray-800 text-right">
+                            <button type="submit" class="px-8 py-2 bg-blue-700 dark:bg-green-600 text-white dark:text-black rounded-xl font-bold active:scale-95 transition-all shadow-lg shadow-blue-500/20">
+                                Simpan Password Baru
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

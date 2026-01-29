@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Update Setting Toko
     Route::patch('/setting/update-store', [AdminIndexController::class, 'updateStore'])->name('setting.updateStore');
+    Route::patch('/setting/update-password', [AdminIndexController::class, 'updatePassword'])->name('setting.updatePassword');
     Route::post('/payment/store', [AdminPaymentController::class, 'store'])->name('payment.store');
     Route::delete('/payment/destroy/{id}', [AdminPaymentController::class, 'destroy'])->name('payment.destroy');
 });

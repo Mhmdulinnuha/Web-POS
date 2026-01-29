@@ -19,7 +19,8 @@
                     class="w-16 h-16 bg-blue-600 dark:bg-green-600 rounded-2xl flex items-center justify-center mb-3 shadow-lg shadow-blue-200 dark:shadow-green-900/40">
                     <i class="fas fa-store text-yellow-400 text-3xl"></i>
                 </div>
-                <h1 class="text-blue-900 dark:text-yellow-400 font-black text-xl tracking-wider uppercase">POS SYSTEM
+                <h1 class="text-blue-900 dark:text-yellow-400 font-black text-xl tracking-wider uppercase">
+                    {{ Auth::user()->store_name ?? 'POS SYSTEM' }}
                 </h1>
                 <div
                     class="w-full h-px bg-gradient-to-r from-transparent via-blue-200 dark:via-green-500/30 to-transparent mt-6">

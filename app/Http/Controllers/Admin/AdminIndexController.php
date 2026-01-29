@@ -84,4 +84,22 @@ class AdminIndexController extends Controller
         // Kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Identitas Toko berhasil diperbarui!');
     }
+
+    /**
+     * Update password admin
+     */
+    public function updatePassword(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = Auth::user();
+        $user->update([
+            'password' => bcrypt($request->password),
+        ]);
+
+        return redirect()->back()->with('success', 'Password berhasil diubah!');
+    }
 }
