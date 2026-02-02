@@ -16,6 +16,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'role:kasir'])->group(function () { 
     Route::get('/dashboardksr', [KasirIndexController::class, 'dashboardksr'])->name('kasir.dashboardksr'); });
+    Route::get('/kasir/transaksi', [TransaksiController::class, 'index']) ->name('kasir.transaksi');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     // Halaman Utama Admin

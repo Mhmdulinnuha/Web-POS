@@ -21,7 +21,7 @@
                     <a href="{{ route('kasir.dashboardksr') }}" 
                        class="flex items-center p-3 rounded-xl transition-all group {{ request()->routeIs('kasir.dashboardksr') ? 'bg-yellow-400 text-[#0d47a1] shadow-lg' : 'text-blue-100 hover:bg-blue-800' }}">
                         <i class="fas fa-shopping-cart w-6 text-lg"></i>
-                        <span class="ms-3">Transaksi Baru</span>
+                        <span class="ms-3">Transaksi Penjualan</span>
                     </a>
                 </li>
                 <li>

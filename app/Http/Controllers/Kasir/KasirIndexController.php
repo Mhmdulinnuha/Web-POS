@@ -14,6 +14,8 @@ class KasirIndexController extends Controller
 {
     public function dashboardksr(): View
     {
-        return view('kasir.dashboardksr');
+        $produks = Product::where('stok_aktif', '>', 0)->get();
+
+        return view('kasir.dashboardksr', compact('produks'));
     }
 }
