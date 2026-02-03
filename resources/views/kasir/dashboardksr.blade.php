@@ -12,14 +12,25 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Temukan produk atau scan barcode untuk memulai.</p>
         </div>
         
-        <div class="relative w-full md:w-96">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                <i class="fas fa-search text-gray-400"></i>
-            </span>
-            <input type="text" 
-                   class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm focus:ring-2 focus:ring-[#0d47a1] focus:border-[#0d47a1] transition-all outline-none" 
-                   placeholder="Cari produk (Nama atau SKU)...">
-        </div>
+       <div class="relative w-full md:w-96">
+    <form method="GET" action="{{ route('kasir.dashboardksr') }}">
+        {{-- pertahankan kategori --}}
+        @if($kategori ?? false)
+            <input type="hidden" name="kategori" value="{{ $kategori }}">
+        @endif
+
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+            <i class="fas fa-search text-gray-400"></i>
+        </span>
+
+        <input type="text"
+               name="search"
+               value="{{ request('search') }}"
+               class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm focus:ring-2 focus:ring-[#0d47a1] focus:border-[#0d47a1] transition-all outline-none"
+               placeholder="Cari produk (Nama atau SKU)...">
+    </form>
+</div>
+
     </div>
 
    {{-- Category Filter --}}
