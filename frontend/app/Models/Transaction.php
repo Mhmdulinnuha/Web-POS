@@ -1,25 +1,35 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Transaction extends Model
 {
-    protected $fillable = ['user_id', 'product_id', 'payment_method', 'total', 'transaction_date'];
+    // Pastikan 'qty' masuk di sini agar bisa disimpan ke database
+    protected $fillable = [
+        'user_id', 
+        'product_id', 
+        'payment_method', 
+        'total', 
+        'transaction_date', 
+        'qty'
+    ];
 
     protected static function booted()
     {
-        // TRIGGER: Saat transaksi dibuat, kurangi stok produk terkait
+        // Hanya satu fungsi booted untuk semua event
         static::created(function ($transaction) {
             $product = $transaction->product;
+            
             if ($product) {
-                // Menggunakan decrement untuk menghindari race condition
-                $product->decrement('stok_aktif', 1); 
+                // AMBIL QTY DINAMIS: Kurangi stok berdasarkan jumlah yang dibeli.
+                // Jika qty kosong (null), default ke 1 agar tidak error.
+                $jumlahDibelinya = $transaction->qty ?? 1;
                 
-                // Logika peringatan stok menipis sudah ada di Model Product (booted saving)
-                // jadi otomatis akan terpicu saat stok berkurang di sini.
+                $product->decrement('stok_aktif', $jumlahDibelinya);
+                
+                // Info: Trigger peringatan stok di Model Product 
+                // otomatis jalan karena ada proses update di sini.
             }
         });
     }

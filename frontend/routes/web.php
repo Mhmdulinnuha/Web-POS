@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\AdminCashierController;
 use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\AiChatController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,6 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //laporan routes could go here
     Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('laporan');
+
+    // AI Chat Route
+    Route::post('/ai/ask', [AiChatController::class, 'ask'])->name('ai.ask');
 });
 
 Route::middleware('auth')->group(function () {

@@ -42,11 +42,31 @@
                 <div class="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-100 dark:border-purple-800/50">
                     <div class="flex gap-3">
                         <div class="flex-shrink-0 h-10 w-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">AI</div>
-                        <div>
-                            <p class="text-xs font-semibold text-purple-700 dark:text-purple-400 uppercase tracking-wider">AI Insight & Analysis</p>
-                            <p id="chatbot-bubble" class="text-sm text-gray-700 dark:text-slate-300 mt-1 leading-relaxed italic">Menganalisis data transaksi Anda...</p>
-                            <div class="mt-2 text-xs text-gray-500">
-                                Produk terlaris: <span id="top-item-name" class="font-bold text-slate-700 dark:text-white">-</span>
+                        <div class="flex-1">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <p class="text-xs font-semibold text-purple-700 dark:text-purple-400 uppercase tracking-wider">AI Insight & Analysis</p>
+                                    <p id="chatbot-bubble" class="text-sm text-gray-700 dark:text-slate-300 mt-1 leading-relaxed italic">Menganalisis data transaksi Anda...</p>
+                                    <div class="mt-2 text-xs text-gray-500">
+                                        Produk terlaris: <span id="top-item-name" class="font-bold text-slate-700 dark:text-white">-</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <button id="open-ai-chat" onclick="toggleAIChat()" class="px-3 py-1 bg-white dark:bg-slate-700 rounded-md text-xs font-medium hover:bg-gray-100 dark:hover:bg-slate-800">Tanya Produk</button>
+                                </div>
+                            </div>
+
+                            <!-- Chat panel (hidden by default) -->
+                            <div id="ai-chat-panel" class="mt-4 hidden">
+                                <div class="border rounded-lg bg-white dark:bg-slate-800 p-3 max-h-48 overflow-y-auto" id="ai-chat-messages">
+                                    <!-- messages will be injected here -->
+                                    <div class="text-xs text-gray-400 italic">Belum ada percakapan. Tanyakan sesuatu tentang produkmu.</div>
+                                </div>
+                                <div class="mt-2 flex gap-2">
+                                    <input id="ai-chat-input" type="text" placeholder="Tanyakan tentang produk, stok, atau penjualan..." class="flex-1 rounded-lg border-gray-300 dark:bg-slate-900 dark:border-slate-700 dark:text-white px-3 py-2 text-sm" />
+                                    <button id="ai-chat-send" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm">Kirim</button>
+                                </div>
+                                <div id="ai-chat-status" class="text-xs text-gray-500 mt-1 hidden">Mengirim...</div>
                             </div>
                         </div>
                     </div>
@@ -217,6 +237,76 @@
                 `;
             }
         };
+
+        // AI Chat functionality
+        const aiChatPanel = document.getElementById('ai-chat-panel');
+        const aiChatMessages = document.getElementById('ai-chat-messages');
+        const aiChatInput = document.getElementById('ai-chat-input');
+        const aiChatSend = document.getElementById('ai-chat-send');
+        const aiChatStatus = document.getElementById('ai-chat-status');
+        const csrfToken = '{{ csrf_token() }}';
+
+        window.toggleAIChat = () => {
+            if (!aiChatPanel) return;
+            aiChatPanel.classList.toggle('hidden');
+            if (!aiChatPanel.classList.contains('hidden')) {
+                aiChatInput.focus();
+            }
+        };
+
+        function appendMessage(sender, text) {
+            if (!aiChatMessages) return;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'mb-2 flex ' + (sender === 'user' ? 'justify-end' : 'justify-start');
+            const bubble = document.createElement('div');
+            bubble.className = (sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-slate-700 text-gray-900 dark:text-white') + ' px-3 py-2 rounded-lg max-w-[80%] text-sm';
+            bubble.innerText = text;
+            wrapper.appendChild(bubble);
+            aiChatMessages.appendChild(wrapper);
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        }
+
+        async function sendAIMessage(message) {
+            if (!message || message.trim() === '') return;
+            appendMessage('user', message);
+            aiChatInput.value = '';
+            aiChatStatus.classList.remove('hidden');
+            aiChatSend.disabled = true;
+
+            try {
+                const res = await fetch('{{ route('ai.ask') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                const payload = await res.json();
+                if (res.ok && payload.success) {
+                    appendMessage('bot', payload.reply || 'Tidak ada jawaban.');
+                    document.getElementById('chatbot-bubble').innerText = payload.reply || document.getElementById('chatbot-bubble').innerText;
+                } else {
+                    appendMessage('bot', payload.reply || 'Gagal mendapatkan jawaban.');
+                }
+            } catch (err) {
+                console.error('AI Chat Error:', err);
+                appendMessage('bot', 'Gagal terhubung ke engine AI.');
+            } finally {
+                aiChatStatus.classList.add('hidden');
+                aiChatSend.disabled = false;
+            }
+        }
+
+        if (aiChatSend) aiChatSend.addEventListener('click', () => sendAIMessage(aiChatInput.value));
+        if (aiChatInput) aiChatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendAIMessage(aiChatInput.value);
+            }
+        });
 
         // Jalankan filter default saat halaman dimuat
         changeAIFilter('hour');
