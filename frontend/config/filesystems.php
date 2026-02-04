@@ -40,8 +40,8 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'root' => storage_path('https://f9eaad08d52a.ngrok-free.app/frontend/public/'),
+            'url' => rtrim(env('APP_URL', 'https://f9eaad08d52a.ngrok-free.app/frontend/public/'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

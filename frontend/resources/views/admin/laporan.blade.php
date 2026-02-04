@@ -172,7 +172,7 @@
 
             try {
                 // Endpoint Django dengan penambahan HEADERS untuk Bypass Ngrok Warning
-                const response = await fetch(`http://127.0.0.1:8001/api/analytics/?admin_id=${adminId}&type=${filterType}`, {
+                const response = await fetch(`https://tamela-hoary-sid.ngrok-free.dev/api/analytics/?admin_id=${adminId}&type=${filterType}`, {
                     method: 'GET',
                     headers: {
                         'ngrok-skip-browser-warning': '69420', // Wajib untuk bypass halaman "Visit Site"

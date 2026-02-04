@@ -67,7 +67,7 @@ ROOT_URLCONF = 'core.urls'
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
-    "https://ff08ff8b3171.ngrok-free.app",
+    "https://faaf86883f03.ngrok-free.app ",  # Sesuaikan dengan URL Laravel Anda
 ]
 CORS_ALLOW_CREDENTIALS = True
 
