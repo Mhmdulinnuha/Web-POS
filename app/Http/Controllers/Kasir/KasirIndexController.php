@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\CartItem;
 
 class KasirIndexController extends Controller
 {
@@ -27,7 +28,11 @@ class KasirIndexController extends Controller
         })
         ->get();
 
-    return view('kasir.dashboardksr', compact('produks', 'kategori', 'search'));
+     $cartItems = CartItem::where('user_id', Auth::id())
+                    ->with('product')
+                    ->get();    
+
+    return view('kasir.dashboardksr', compact('produks', 'kategori', 'search', 'cartItems'));
 }
 
 

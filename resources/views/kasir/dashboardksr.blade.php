@@ -12,13 +12,8 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Temukan produk atau scan barcode untuk memulai.</p>
         </div>
         
-       <div class="relative w-full md:w-96">
-    <form method="GET" action="{{ route('kasir.dashboardksr') }}">
-        {{-- pertahankan kategori --}}
-        @if($kategori ?? false)
-            <input type="hidden" name="kategori" value="{{ $kategori }}">
-        @endif
-
+        <form method="GET" action="{{ route('kasir.dashboardksr') }}">
+    <div class="relative w-full md:w-96">
         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
             <i class="fas fa-search text-gray-400"></i>
         </span>
@@ -26,10 +21,14 @@
         <input type="text"
                name="search"
                value="{{ request('search') }}"
-               class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm focus:ring-2 focus:ring-[#0d47a1] focus:border-[#0d47a1] transition-all outline-none"
+               class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800
+                      border border-gray-200 dark:border-slate-700 rounded-xl
+                      shadow-sm focus:ring-2 focus:ring-[#0d47a1]
+                      focus:border-[#0d47a1] transition-all outline-none"
                placeholder="Cari produk (Nama atau SKU)...">
-    </form>
-</div>
+
+    </div>
+      </form>
 
     </div>
 
@@ -87,9 +86,13 @@
                 <span class="font-black text-sm">
                     Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}
                 </span>
-                <button class="w-8 h-8 bg-gray-100 rounded-lg">
-                    <i class="fas fa-plus text-xs"></i>
-                </button>
+              <button
+    class="w-8 h-8 bg-gray-100 rounded-lg add-to-cart"
+    data-id="{{ $produk->id }}"
+    data-harga="{{ $produk->harga_jual }}"
+>
+    <i class="fas fa-plus text-xs"></i>
+</button>
             </div>
         </div>
     @empty
@@ -102,3 +105,50 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".add-to-cart").forEach(button => {
+        button.addEventListener("click", function () {
+
+            let produkId = this.dataset.id;
+            let harga    = this.dataset.harga;
+
+            fetch("{{ route('cart.add') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    produk_id: produkId,
+                    harga: harga
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Produk berhasil ditambahkan");
+                    
+                }
+            })
+            .catch(error => console.error(error));
+
+        });
+    });
+
+});
+</script>
+@endpush
+
+
+
+
+
+@push('scripts')
+<script>
+
+
+@endpush

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\AdminCashierController;
 use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Kasir\KasirIndexController;
+use App\Http\Controllers\Kasir\CartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,7 +17,15 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'role:kasir'])->group(function () { 
     Route::get('/dashboardksr', [KasirIndexController::class, 'dashboardksr'])->name('kasir.dashboardksr'); });
-    Route::get('/kasir/transaksi', [TransaksiController::class, 'index']) ->name('kasir.transaksi');
+   Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/cart/data', [CartController::class, 'data'])->name('cart.data');
+    
+
+
+
+
+
+
    
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
